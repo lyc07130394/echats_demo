@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script type="text/javascript" src="../jquery-2.1.1.min"></script>-->
+    <script src="/webjars/jquery/3.5.1/jquery.js"></script>
+        <script type="text/javascript" src="../echarts.min.js"></script>
+
+</head>
+<body>
+<a href="/covid">进去北京新冠疫情走势表</a>
+<div id="main" style="width: 1000px;height:600px;"></div>
+<script>
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+    // 指定图表的配置项和数据
+    myChart.setOption({
+        title: {text: '北京天气最近一周预告'},//标题
+        tooltip: {},//提示信息
+        legend: {//图例组件
+            data:['天气预告']
+        },
+        // X 轴显示的项
+        xAxis: {
+            type: 'category',//坐标轴类型 value数值轴,category类目轴,time时间轴,log对数轴
+            name: '星期',
+            //data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            data:[],
+            axisLabel: {
+                formatter: '{value} '
+            }
+        },
+        // Y 轴显示的项
+        yAxis: {
+            type: 'value',
+            name: '温度',
+            min: -20,//最小值
+            max: 20,//最大值
+            interval: 3 ,//间隔
+            axisLabel: {
+                formatter: '{value} °C'
+            }
+        },
+        //系列列表,每个系列通过 type 决定自己的图表类型
+        series: [
+            {
+                name: '温度',
+                type: 'line',
+               // data: [5, 20, 36, 10, 10, 20]
+                data:[]
+            }]
+    });
+
+</script>
+</body>
+<script>
+$(function (){
+$.ajax({
+    url:"/getData",
+    //data:{},
+    dataType:"json",
+    type:"post",
+    async:false,
+    success:function (result)
+    {
+        myChart.setOption({
+            xAxis: [{name:"星期",data:result.eategories}],
+            series: [{name:"温度",type:"line",data:result.data}]
+        })
+    }
+})
+})
+</script>
+</html>
